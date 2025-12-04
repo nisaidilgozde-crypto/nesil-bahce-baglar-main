@@ -21,8 +21,8 @@ const About = () => {
     },
     {
       icon: Sprout,
-      title: "Hortikültürel Terapi",
-      description: "Hortikültürel terapi"
+      title: "",
+      description: ""
     },
     {
       icon: Brain,
@@ -50,7 +50,7 @@ const About = () => {
             const isProjectPurpose = benefit.title === "Projenin Amacı";
             const isEcologyApproach = benefit.title === "Ekolojik Yaklaşım";
             const isHorticulture = benefit.title === "Hortikültürel Terapi";
-            const isInteractive = isProjectPurpose || isEcologyApproach || isHorticulture;
+            const isInteractive = isProjectPurpose || isEcologyApproach;
             return (
               <Card
                 key={index}
@@ -153,46 +153,10 @@ const About = () => {
       <Dialog open={isHorticultureDialogOpen} onOpenChange={setIsHorticultureDialogOpen}>
         <DialogContent className="sm:max-w-3xl">
           <DialogHeader>
-            <DialogTitle>Hortikültürel Terapi</DialogTitle>
-            <DialogDescription>
-              Bahçecilik temelli terapötik uygulamaların yaşlı bireylere katkısına dair kısa özet.
-            </DialogDescription>
+            <DialogTitle></DialogTitle>
+            <DialogDescription></DialogDescription>
           </DialogHeader>
-          <div className="mt-6 text-base leading-relaxed text-emerald-600 text-center">
-            Bahçecilik faaliyetleri içeren bahçe terapileri (hortikültürel terapi) bireylerin psikolojik iyi oluş
-            düzeyini artıran, stresi azaltan ve aktif yaşlanmayı destekleyici uygulamalardan kabul edilmektedir
-            (Kamioka ve ark., 2013; Hartig ve ark., 2014; Masuya ve ark., 2014; Makizako ve ark., 2015; Ng ve ark.,
-            2018).
-            <br />
-            <br />
-            Bu etkinlikler, doğa ile etkileşim yoluyla fiziksel ve sosyal becerileri koruyarak yaşam kalitesini
-            artırmakta ve topluma katılmayı kolaylaştırmaktadır (Better Health Channel, 2014; Scott ve ark., 2015; Chan
-            ve ark., 2017; Gonzalez ve ark., 2010).
-            <br />
-            <br />
-            Tarihsel olarak tüm toplumlarda şifa amacıyla kullanılan terapi bahçeleri, yaşlı bireylerde kaybedilen
-            fiziksel yeteneklerin geri kazanılmasını ve sosyalleşmeyi sağlamaktadır (Arslan & Katipoğlu, 2011).
-            <br />
-            <br />
-            Hortikültürel terapi uygulamalarının yaşlı bireylerde stresin azalmasını, depresyon puanlarının düşmesini ve
-            yaşam kalitesinin artmasını desteklediği tespit edilmiştir (Arslan & Ekren, 2017).
-            <br />
-            <br />
-            Hortikültürel terapi etkinliklerinin yaşlı bireylerin aileye ve topluma katılımı artırmakta ve çevre bilinci-
-            doğa koruma tutumlarının geliştirilmesini sağladığı ifade edilmektedir (Pekesen, 2021; Kabakcı, 2023).
-            <br />
-            <br />
-            Hortikültürel terapi ile sağlık ve yaşam memnuniyeti artan ve kendilerini değerli hissetmeye başlayan yaşlı
-            bireyler deneyimlerini genç nesillere aktararak toplumsal anlamda katkı sağlamaya yönelmektedir.
-            <br />
-            <br />
-            Etkinlikler, yaşlıların aile ve toplum içindeki değerini pekiştirirken toplumsal bağların güçlenmesini ve
-            nesiller arası bilgi aktarımını destekleyecek nitelikte tasarlanmıştır. “Yeşil Vatan” teması çerçevesinde
-            yürütülecek bu uygulamaların, çevresel bilinç ve doğa koruma sorumluluğunu artırmasının yanında yaşlı
-            bireylerin sosyal katılımını artırması hedeflenmiştir. Araştırma “AKTİF YAŞLANMA” yaklaşımını destekleyen,
-            gençlerin çevresel ve toplumsal sorumluluk bilincini artıran ve nesiller arası etkileşimi teşvik eden
-            bütüncül bir model sunmaktadır.
-          </div>
+          <div className="mt-6 text-base leading-relaxed text-emerald-600 text-center" />
         </DialogContent>
       </Dialog>
     </section>
