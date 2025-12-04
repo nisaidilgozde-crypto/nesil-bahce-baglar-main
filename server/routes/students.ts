@@ -4,7 +4,7 @@ import { authenticateToken, AuthRequest } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Tüm öğrencileri getir
+// Tüm öğrencileri getir (admin)
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const [rows] = await db.execute(
@@ -26,7 +26,7 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Tek bir öğrenciyi getir
+// Tek bir öğrenciyi getir (admin)
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -59,7 +59,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Yeni öğrenci ekle
+// Yeni öğrenci ekle (admin)
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { first_name, last_name, student_number, class_name, school_name, phone, email, volunteer_id, notes } = req.body;
@@ -111,7 +111,7 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Öğrenci güncelle
+// Öğrenci güncelle (admin)
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -181,7 +181,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Öğrenci sil
+// Öğrenci sil (admin)
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -204,7 +204,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Öğrenci-Gönüllü eşleştirme
+// Öğrenci-Gönüllü eşleştirme (admin)
 router.post('/:id/pair', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -255,7 +255,64 @@ router.post('/:id/pair', authenticateToken, async (req, res) => {
   }
 });
 
+// Public öğrenci başvurusu (landing sayfası)
+router.post('/public', async (req, res) => {
+  try {
+    const {
+      first_name,
+      last_name,
+      student_number,
+      class_name,
+      school_name,
+      phone,
+      email,
+      notes,
+    } = req.body;
+
+    if (!first_name || !last_name) {
+      return res.status(400).json({ error: 'First name and last name are required' });
+    }
+
+    // Öğrenci numarası kontrolü
+    if (student_number) {
+      const [existing]: any = await db.execute(
+        'SELECT id FROM students WHERE student_number = ?',
+        [student_number]
+      );
+
+      if (existing.length > 0) {
+        return res.status(400).json({ error: 'Student number already exists' });
+      }
+    }
+
+    const [result]: any = await db.execute(
+      `INSERT INTO students (first_name, last_name, student_number, class_name, school_name, phone, email, notes) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        first_name,
+        last_name,
+        student_number || null,
+        class_name || null,
+        school_name || null,
+        phone || null,
+        email || null,
+        notes || null,
+      ]
+    );
+
+    const [newStudent]: any = await db.execute(
+      'SELECT * FROM students WHERE id = ?',
+      [result.insertId]
+    );
+
+    res.status(201).json(newStudent[0]);
+  } catch (error: any) {
+    console.error('Create student error (public):', error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ error: 'Student number already exists' });
+    }
+    res.status(500).json({ error: 'Failed to create student' });
+  }
+});
+
 export default router;
-
-
-

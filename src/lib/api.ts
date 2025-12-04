@@ -68,7 +68,7 @@ export const authAPI = {
   },
 };
 
-// Volunteers API
+// Volunteers API (admin)
 export const volunteersAPI = {
   getAll: async () => {
     const response = await apiRequest('/volunteers');
@@ -230,7 +230,7 @@ export const uploadAPI = {
   },
 };
 
-// Students API
+// Students API (admin)
 export const studentsAPI = {
   getAll: async () => {
     const response = await apiRequest('/students');
@@ -270,6 +270,45 @@ export const studentsAPI = {
       method: 'POST',
       body: JSON.stringify({ volunteer_id: volunteerId }),
     });
+    return response.json();
+  },
+};
+
+// Public registration APIs (no auth, landing page formlarında kullanılır)
+export const publicVolunteersAPI = {
+  create: async (data: any) => {
+    const response = await fetch(`${API_BASE_URL}/volunteers/public`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  },
+};
+
+export const publicStudentsAPI = {
+  create: async (data: any) => {
+    const response = await fetch(`${API_BASE_URL}/students/public`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    }
+
     return response.json();
   },
 };

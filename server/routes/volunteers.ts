@@ -5,7 +5,7 @@ import { sendSMS } from '../services/smsService.js';
 
 const router = express.Router();
 
-// Tüm gönüllüleri getir
+// Tüm gönüllüleri getir (admin)
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const [rows] = await db.execute(
@@ -18,7 +18,7 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Tek bir gönüllüyü getir
+// Tek bir gönüllüyü getir (admin)
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -38,7 +38,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Yeni gönüllü ekle
+// Yeni gönüllü ekle (admin)
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { first_name, last_name, phone, email, address, notes } = req.body;
@@ -95,7 +95,7 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Gönüllü güncelle
+// Gönüllü güncelle (admin)
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -149,7 +149,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Gönüllü sil
+// Gönüllü sil (admin)
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -169,6 +169,65 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   } catch (error: any) {
     console.error('Delete volunteer error:', error);
     res.status(500).json({ error: 'Failed to delete volunteer' });
+  }
+});
+
+// Public gönüllü başvurusu (landing sayfası)
+router.post('/public', async (req, res) => {
+  try {
+    const { first_name, last_name, phone, email, address, notes } = req.body;
+
+    if (!first_name || !last_name || !phone) {
+      return res
+        .status(400)
+        .json({ error: 'First name, last name, and phone are required' });
+    }
+
+    // Telefon numarası kontrolü
+    const [existing]: any = await db.execute(
+      'SELECT id FROM volunteers WHERE phone = ?',
+      [phone]
+    );
+
+    if (existing.length > 0) {
+      return res.status(400).json({ error: 'Phone number already exists' });
+    }
+
+    const [result]: any = await db.execute(
+      `INSERT INTO volunteers (first_name, last_name, phone, email, address, notes) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [first_name, last_name, phone, email || null, address || null, notes || null]
+    );
+
+    const volunteerId = result.insertId;
+
+    // Hoşgeldin SMS'i gönder (admin endpointi ile aynı davranış)
+    try {
+      const welcomeMessage = `Merhaba ${first_name} ${last_name}! Nesilden Nesile Yeşil Geleceğe projesine hoş geldiniz. Sizinle çalışmak için sabırsızlanıyoruz.`;
+
+      await sendSMS(phone, welcomeMessage, volunteerId);
+
+      await db.execute(
+        'UPDATE volunteers SET welcome_sms_sent = TRUE, welcome_sms_sent_at = NOW() WHERE id = ?',
+        [volunteerId]
+      );
+    } catch (smsError) {
+      console.error('Welcome SMS error (public):', smsError);
+      // SMS hatası olsa bile gönüllü kaydı başarılı
+    }
+
+    const [newVolunteer]: any = await db.execute(
+      'SELECT * FROM volunteers WHERE id = ?',
+      [volunteerId]
+    );
+
+    res.status(201).json(newVolunteer[0]);
+  } catch (error: any) {
+    console.error('Create volunteer error (public):', error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ error: 'Phone number already exists' });
+    }
+    res.status(500).json({ error: 'Failed to create volunteer' });
   }
 });
 
