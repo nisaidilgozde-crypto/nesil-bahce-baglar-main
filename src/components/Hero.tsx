@@ -19,23 +19,13 @@ const Hero = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-20 text-center">
-        <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20">
-            <Leaf className="h-5 w-5 text-primary-foreground" />
-            <span className="text-primary-foreground text-sm font-medium">8 Haftalık Hortikürel Terapi Faaliyetleri</span>
-          </div>
-        </div>
-
         <h1 className="text-5xl md:text-7xl font-bold text-primary-foreground mb-6 leading-tight">
           Nesilden Nesile
           <br />
           <span className="text-primary-glow">Yeşil Geleceğe</span>
         </h1>
 
-        <p className="text-xl md:text-2xl text-primary-foreground/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-          Yaşlı bireyler ve genç gönüllülerin bir araya geldiği, doğa ile bağ kuran, 
-          psikolojik iyi oluşu artıran yenilikçi bir proje
-        </p>
+        <p className="text-xl md:text-2xl text-primary-foreground/90 mb-8 max-w-3xl mx-auto leading-relaxed" />
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button variant="hero" size="lg" className="group">
